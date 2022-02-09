@@ -1,23 +1,7 @@
-import { data } from "../SpeakerData"
-import Speaker from "../src/components/speakers";
+import Speakers from "../src/components/Speakers";
 
-const indexPage = () =>
-{
-    // const {id, bio, first, last, company, favorite, twitterHandle, sessions } = data[0];
-    return (
-        <div className="container speakers-list">
-            <div className="row">
-                {data.map(function(speaker){
-                    return (
-                        <Speaker key={speaker.id} speaker={speaker} />
-                    )
-                })}
+const IndexPage = () => {
+  return <Speakers />;
+};
 
-                
-            </div>
-        </div>
-    );
-    
-}
-
-export default indexPage;
+export default IndexPage;
