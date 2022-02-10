@@ -5,14 +5,25 @@ import { useState, useEffect } from 'react';
 function SpeakerList({showSessions})
 {
     const [speakersData, setSpeakersData] = useState([]);
-
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    const[isLoading, setIsLoading] = useState(true);
+    const[hasError, setHasError] = useState(false);
+    const[error, setError] = [""];
+
 
     useEffect(() => {
       async function delayFunc()
       {
-        await delay(2000);
-        setSpeakersData(data);
+        try {
+          await delay(2000);
+          setIsLoading(false);
+          setSpeakersData(data);
+        } catch (e) {
+          setIsLoading(false);
+          setHasError(true);
+          setError(e);
+        }
+        
       }
       delayFunc();
     });
@@ -31,6 +42,16 @@ function SpeakerList({showSessions})
     
         setSpeakersData(speakersDataNew);
       }
+
+      if (hasError === true) {
+        return (
+          <div className='text-Danger'>
+            Error: <b>Loading Speaker Failed {error}</b>
+          </div>
+        )
+      }
+
+      if(isLoading === true) return <div>Loading...</div>
 
     return (
         <div className="container speakers-list">
