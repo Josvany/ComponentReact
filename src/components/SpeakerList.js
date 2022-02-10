@@ -1,6 +1,7 @@
 import Speaker from './Speaker';
 import { data } from '../../SpeakerData';
 import { useState, useEffect } from 'react';
+import ReactPlaceholder from 'react-placeholder/lib';
 
 function SpeakerList({showSessions})
 {
@@ -51,21 +52,23 @@ function SpeakerList({showSessions})
         )
       }
 
-      if(isLoading === true) return <div>Loading...</div>
+      // if(isLoading === true) return <div>Loading...</div>
 
     return (
-        <div className="container speakers-list">
-            <div className="row">
-                {speakersData.map(function(speaker){
-                    return (
-                        <Speaker key={speaker.id} speaker={speaker} showSessions={showSessions}
-                                 onFavoriteToggle={() => {
-                                     onFavoriteToggle(speaker.id)
-                                 }} />
-                    )
-                })}
-            </div>
-        </div>
+      <ReactPlaceholder type="media" rows={15} className="speakersList-placeholder" ready={isLoading === false}>
+          <div className="container speakers-list">
+              <div className="row">
+                  {speakersData.map(function(speaker){
+                      return (
+                          <Speaker key={speaker.id} speaker={speaker} showSessions={showSessions}
+                                  onFavoriteToggle={() => {
+                                      onFavoriteToggle(speaker.id)
+                                  }} />
+                      )
+                  })}
+              </div>
+          </div>
+        </ReactPlaceholder>
     )
 }
 
