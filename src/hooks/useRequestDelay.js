@@ -29,19 +29,25 @@ function useRequestDelay(delayTime = 1000, initialData = []) {
   }, []);
 
   function updateRecord(recordUpdated, doneCallback) {
+      constOriginalRecords = [...data];
     const newRecords = data.map(function (rec) {
       return rec.id === recordUpdated.id ? recordUpdated : rec;
     });
 
     async function delayFunction() {
       try {
+        setData(initialData); // si se quiere mostrar el update de la estrella de inmediato antes de pasar por el tiempo de espera
         await delay(delayTime);
         if (doneCallback) {
             doneCallback();
         }
-        setData(newRecords);
+        
       } catch (error) {
         console.log("error thrown inside delayFunction", error);
+        if (doneCallback) {
+            doneCallback();
+        }
+        setData(constOriginalRecords);
       }
     }
     delayFunction();
