@@ -4,6 +4,7 @@ import ReactPlaceHolder from "react-placeholder";
 import useRequestDelay, { REQUEST_STATUS } from "../hooks/useRequestDelay";
 import { data } from "../../SpeakerData";
 import { SpeakerFilterContext } from "../contexts/SpeakerFilterContext";
+import SpeakerAdd from "./SpeakerAdd";
 
 function SpeakersList() {
   const {
@@ -11,6 +12,8 @@ function SpeakersList() {
     requestStatus,
     error,
     updateRecord,
+    insertRecord, 
+    deleteRecord,
   } = useRequestDelay(2000, data);
 
   const { searchQuery, eventYear } = useContext(SpeakerFilterContext);
@@ -27,12 +30,8 @@ function SpeakersList() {
 
   return (
     <div className="container speakers-list">
-      <ReactPlaceHolder
-        type="media"
-        rows={15}
-        className="speakerslist-placeholder"
-        ready={requestStatus === REQUEST_STATUS.SUCCESS}
-      >
+      <ReactPlaceHolder type="media" rows={15} className="speakerslist-placeholder" ready={requestStatus === REQUEST_STATUS.SUCCESS}>
+        <SpeakerAdd eventYear={eventYear} insertRecord={insertRecord} />
         <div className="row">
           {speakersData
             .filter(function (speaker) {
@@ -52,6 +51,8 @@ function SpeakersList() {
                   key={speaker.id}
                   speaker={speaker}
                   updateRecord={updateRecord}
+                  insertRecord={insertRecord}
+                  deleteRecord={deleteRecord}
                 />
               );
             })}
