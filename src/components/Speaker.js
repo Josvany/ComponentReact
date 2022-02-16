@@ -1,7 +1,8 @@
 import React, { useState, useContext, memo } from "react";
 import { SpeakerFilterContext } from "../contexts/SpeakerFilterContext";
 import { SpeakerProvider, SpeakerContext } from "../contexts/SpeakerContext";
-import SpeakerDelete from "./SpeakerDelete"
+import SpeakerDelete from "./SpeakerDelete";
+import ErrorBoundary from "./ErrorBoundary";
 
 function Session({ title, room }) {
   return (
@@ -114,7 +115,7 @@ function SpeakerInfo() {
       </div>
       <SpeakerFavorite />
       <div>
-        <p className="card-description">{bio}</p>
+        <p className="card-description">{bio.substr(0, 70)}</p>
         <div className="social d-flex flex-row mt-4">
           <div className="company">
             <h5>Company</h5>
@@ -130,12 +131,35 @@ function SpeakerInfo() {
   );
 }
 
-const Speaker = memo(function Speaker({ speaker, updateRecord, insertRecord, deleteRecord}) 
-{
-  
+const SpeakerNoErrorBoundary = memo(function Speaker({
+  speaker,
+  updateRecord,
+  insertRecord,
+  deleteRecord,
+  showErrorCard,
+}) {
   const { showSessions } = useContext(SpeakerFilterContext);
+  console.log(`speaker: ${speaker.id} ${speaker.first} ${speaker.last}`);
+  if (showErrorCard) {
+    return (
+      <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-sm-12 col-xs-12">
+        <div className="card card-height p-4 mt-4">
+          <img src="/images/speaker-99999.jpg" />
+          <div>
+            <b>Error Showing Speaker</b>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <SpeakerProvider speaker={speaker} updateRecord={updateRecord} insertRecord={insertRecord} deleteRecord={deleteRecord}>
+    <SpeakerProvider
+      speaker={speaker}
+      updateRecord={updateRecord}
+      insertRecord={insertRecord}
+      deleteRecord={deleteRecord}
+    >
       <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-sm-12 col-xs-12">
         <div className="card card-height p-4 mt-4">
           <SpeakerImage />
@@ -146,11 +170,26 @@ const Speaker = memo(function Speaker({ speaker, updateRecord, insertRecord, del
       </div>
     </SpeakerProvider>
   );
-}, areEqualSpeaker);
+},
+areEqualSpeaker);
 
-function areEqualSpeaker(provProps, nextProps)
-{
-  return (provProps.speaker.favorite === nextProps.speaker.favorite);
+function Speaker(props) {
+  return (
+    <ErrorBoundary
+      errorUI={
+        <SpeakerNoErrorBoundary
+          {...props}
+          showErrorCard={true}
+        ></SpeakerNoErrorBoundary>
+      }
+    >
+      <SpeakerNoErrorBoundary {...props}></SpeakerNoErrorBoundary>
+    </ErrorBoundary>
+  );
+}
+
+function areEqualSpeaker(prevProps, nextProps) {
+  return prevProps.speaker.favorite === nextProps.speaker.favorite;
 }
 
 export default Speaker;
